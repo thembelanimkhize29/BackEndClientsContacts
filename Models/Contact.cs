@@ -13,14 +13,14 @@ namespace ClientsContactsProj.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long Id { get; set; }
 
-        
+        [Required]
         public string Name { get; set; } = null!;
 
-       
+       [Required]
         public string Surname { get; set; } = null!;
 
         
-        [EmailAddress]
+        [EmailAddress][Required]// [Index(IsUnique = true)] 
         // Validate as email format
         public string Email { get; set; } = null!;
 

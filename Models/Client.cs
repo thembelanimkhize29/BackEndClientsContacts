@@ -13,10 +13,12 @@ namespace ClientsContactsProj.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
+        [Required]
         public string Name { get; set; }=null!;
 
        
-        // [Index(IsUnique = true)]
+        // [Index(IsUnique = true)] 
+        [Required]
         public string ClientCode { get; set; }=null!;
 
 // Many-to-many relationship with Contact

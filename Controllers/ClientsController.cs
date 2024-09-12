@@ -12,15 +12,16 @@ namespace ClientsContactsProj.Controllers
     {
         private readonly AppDbContext _context;
 
-        public ClientsController(AppDbContext context){
-            _context=context;
+        public ClientsController(AppDbContext context)
+        {
+            _context = context;
             _context.Database.EnsureCreated();
         }
 
         // [HttpGet]
         // public string GetClient()
         // {
-        //     return "okd";
+        //     return "ok";
         // }
 
         // [HttpGet]
@@ -29,15 +30,17 @@ namespace ClientsContactsProj.Controllers
         //     return _context.Clients.ToArray();
         // }
         [HttpGet]
-        public async Task<ActionResult> GetAllClients()
+        public async Task<ActionResult> GetClients()
         {
             return Ok(await _context.Clients.ToArrayAsync());
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult> GetClientsById(int id){
-            var client=await _context.Clients.FindAsync(id);
-            if(client==null){
+        public async Task<ActionResult> GetClient(int id)
+        {
+            var client = await _context.Clients.FindAsync(id);
+            if (client == null)
+            {
                 return NotFound();
             }
             return Ok(client);
