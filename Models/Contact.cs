@@ -1,8 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 namespace ClientsContactsProj.Models
 {
@@ -14,17 +13,20 @@ namespace ClientsContactsProj.Models
         public long Id { get; set; }
 
         [Required]
-        public string Name { get; set; } = null!;
+        [Column("name")]
+        public string Name { get; set; }= null!;
 
-       [Required]
-        public string Surname { get; set; } = null!;
+        [Required]
+        [Column("surname")]
+        public string Surname { get; set; }= null!;
 
-        
-        [EmailAddress][Required]// [Index(IsUnique = true)] 
-        // Validate as email format
-        public string Email { get; set; } = null!;
+        [Required]
+        [Column("email")]
+        public string Email { get; set; }= null!;
 
-        // Many-to-many relationship with Client
-        public virtual ICollection<Client> Clients { get; set; } = new HashSet<Client>();
+        // many-to-many relationship with Client
+        [JsonIgnore]
+        public ICollection<Client> Clients { get; set; } = new HashSet<Client>();
+
     }
 }

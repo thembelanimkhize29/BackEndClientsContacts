@@ -1,5 +1,6 @@
 using ClientsContactsProj.Data;
 using ClientsContactsProj.Models;
+using ClientsContactsProj.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,12 +11,62 @@ namespace ClientsContactsProj.Controllers
     [ApiController]
     public class ClientsController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly ClientService _clientService;
 
-        public ClientsController(AppDbContext context)
+        public ClientsController(ClientService clientService)
         {
-            _context = context;
-            _context.Database.EnsureCreated();
+            _clientService = clientService;
+//            _context.Database.EnsureCreated();
+        }
+
+        [HttpPost("create")]
+        public async Task<IActionResult> CreateClient([FromBody] Client client)
+        {
+            client.ClientCode = _clientService.GenerateClientCode(client.FirstName);
+
+            var createdClient = await _clientService.CreateClientAsync(client);
+
+            return CreatedAtAction(nameof(CreateClient), new { id = createdClient.Id }, createdClient);
+        }
+
+
+        [HttpGet]
+        public async Task<ActionResult> GetClients()
+        {
+            var clients = await _clientService.GetClientsAsync();
+            return Ok(clients);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult> GetClient(int id)
+        {
+            var client = await _clientService.GetClientByIdAsync(id);
+            if (client == null)
+            {
+                return NotFound();
+            }
+            return Ok(client);
+        }
+
+        [HttpGet("list")]
+        public async Task<ActionResult<List<Client>>> GetClientsByFirstName()
+        {
+            var clients = await _clientService.GetAllClientsOrderedByNameAsync();
+
+            if (clients == null || clients.Count == 0)
+            {
+                return NotFound(); 
+            }
+
+            return Ok(clients);
+        }
+
+        [HttpGet("count-linked-contacts")]
+        public async Task<ActionResult<int>> CountLinkedContacts([FromQuery] string clientName)
+        {
+            var count = await _clientService.CountLinkedContactsAsync(clientName);
+
+            return Ok(count);
         }
 
         // [HttpGet]
@@ -29,21 +80,6 @@ namespace ClientsContactsProj.Controllers
         // {
         //     return _context.Clients.ToArray();
         // }
-        [HttpGet]
-        public async Task<ActionResult> GetClients()
-        {
-            return Ok(await _context.Clients.ToArrayAsync());
-        }
-
-        [HttpGet("{id}")]
-        public async Task<ActionResult> GetClient(int id)
-        {
-            var client = await _context.Clients.FindAsync(id);
-            if (client == null)
-            {
-                return NotFound();
-            }
-            return Ok(client);
-        }
+      
     }
 }

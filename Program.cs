@@ -1,4 +1,5 @@
 using ClientsContactsProj.Data;
+using ClientsContactsProj.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +16,8 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("Default"))); 
+builder.Services.AddScoped<ClientService>();
+builder.Services.AddScoped<ContactService>();
     
 var app = builder.Build();
 
