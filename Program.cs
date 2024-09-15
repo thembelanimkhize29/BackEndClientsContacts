@@ -40,6 +40,9 @@ using (var scope = app.Services.CreateScope()){
     var db=scope.ServiceProvider.GetRequiredService<AppDbContext>();
     await db.Database.EnsureCreatedAsync();
 }
+app.UseCors(option => option.AllowAnyHeader()
+                                .AllowAnyOrigin()
+                                .AllowAnyMethod());
 
 //minimal APIs
 app.MapGet("/clients", async (AppDbContext _context) =>{

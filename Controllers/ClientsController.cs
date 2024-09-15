@@ -22,6 +22,10 @@ namespace ClientsContactsProj.Controllers
         [HttpPost("create")]
         public async Task<IActionResult> CreateClient([FromBody] Client client)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
             client.ClientCode = _clientService.GenerateClientCode(client.FirstName);
 
             var createdClient = await _clientService.CreateClientAsync(client);
@@ -34,6 +38,9 @@ namespace ClientsContactsProj.Controllers
         public async Task<ActionResult> GetClients()
         {
             var clients = await _clientService.GetClientsAsync();
+            if(clients==null){
+                return NotFound();
+            }
             return Ok(clients);
         }
 
@@ -64,6 +71,8 @@ namespace ClientsContactsProj.Controllers
         [HttpGet("count-linked-contacts")]
         public async Task<ActionResult<int>> CountLinkedContacts([FromQuery] string clientName)
         {
+            //check if we have that client
+            
             var count = await _clientService.CountLinkedContactsAsync(clientName);
 
             return Ok(count);

@@ -88,5 +88,16 @@ namespace ClientsContactsProj.Services
                 .OrderBy(c => c.Surname)
                 .ToListAsync();
         }
+
+        public async Task<int> CountLinkedClientsAsync(string contactEmail)
+        {
+            
+            string processedEmail = contactEmail.Trim().ToLower();
+
+            return await _context.Contacts
+                .Where(c => c.Email == processedEmail)
+                .SelectMany(c => c.Clients)
+                .CountAsync();
+        }
     }
 }
