@@ -21,6 +21,7 @@ namespace ClientsContactsProj.Models
         public string Surname { get; set; }= null!;
 
         [Required]
+        [EmailAddress]
         [Column("email")]
         public string Email { get; set; }= null!;
 

@@ -17,7 +17,7 @@ namespace ClientsContactsProj.Models
 
         [Required]
         [Column("client_code")]
-        //[MaxLength(6)]
+        [MaxLength(6)]
         public string ClientCode { get; set; }= null!;
 
         // many-to-many relationship with Contact

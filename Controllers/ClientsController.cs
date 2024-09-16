@@ -22,10 +22,10 @@ namespace ClientsContactsProj.Controllers
         [HttpPost("create")]
         public async Task<IActionResult> CreateClient([FromBody] Client client)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
+            // if (!ModelState.IsValid)
+            // {
+            //     return BadRequest();
+            // }
             client.ClientCode = _clientService.GenerateClientCode(client.FirstName);
 
             var createdClient = await _clientService.CreateClientAsync(client);

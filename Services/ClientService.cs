@@ -18,39 +18,39 @@ namespace ClientsContactsProj.Services
 
         }
 
-       
+
         public string GenerateClientCode(string name)
-    {
-        string alphaPart = GenerateAlphaPart(name);
-        int numericPart = 1; // Start with 001
-
-        string clientCode;
-        do
         {
-            clientCode = alphaPart + string.Format("{0:D3}", numericPart);
-            numericPart++;
-        } while (_context.Clients.Any(c => c.ClientCode == clientCode)); 
+            string alphaPart = GenerateAlphaPart(name);
+            int numericPart = 1; // Start with 001
 
-        return clientCode;
-    }
+            string clientCode;
+            do
+            {
+                clientCode = alphaPart + string.Format("{0:D3}", numericPart);
+                numericPart++;
+            } while (_context.Clients.Any(c => c.ClientCode == clientCode));
 
-       private string GenerateAlphaPart(string name)
-{
-    
-    var words = name.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-    var alphaPart = new string(words.Select(w => w[0]).ToArray()).ToUpper();
+            return clientCode;
+        }
 
-    if (alphaPart.Length < 3)
-    {
-        alphaPart = alphaPart.PadRight(3, 'A');
-    }
-    else if (alphaPart.Length > 3)
-    {
-        alphaPart = alphaPart.Substring(0, 3);
-    }
+        private string GenerateAlphaPart(string name)
+        {
 
-    return alphaPart;
-}
+            var words = name.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            var alphaPart = new string(words.Select(w => w[0]).ToArray()).ToUpper();
+
+            if (alphaPart.Length < 3)
+            {
+                alphaPart = alphaPart.PadRight(3, 'A');
+            }
+            else if (alphaPart.Length > 3)
+            {
+                alphaPart = alphaPart.Substring(0, 3);
+            }
+
+            return alphaPart;
+        }
 
 
         public async Task<Client> CreateClientAsync(Client client)
@@ -82,8 +82,11 @@ namespace ClientsContactsProj.Services
 
         public async Task<IEnumerable<Client>> GetClientsAsync()
         {
-            return await _context.Clients.ToListAsync();
+            return await _context.Clients
+                .Include(c => c.Contacts)
+                .ToListAsync();
         }
+
 
         public async Task<Client?> GetClientByIdAsync(int id)
         {
@@ -93,6 +96,7 @@ namespace ClientsContactsProj.Services
         public async Task<List<Client>> GetAllClientsOrderedByNameAsync()
         {
             return await _context.Clients
+            .Include(c => c.Contacts)
                 .OrderBy(c => c.FirstName)
                 .ToListAsync();
         }
